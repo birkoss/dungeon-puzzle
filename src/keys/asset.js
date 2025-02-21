@@ -1,0 +1,5 @@
+export const MAP_ASSET_KEYS = Object.freeze({
+    WORLD: 'MAP_ASSET_KEYS.WORLD',
+    UNIT: 'MAP_ASSET_KEYS.UNIT',
+    SELECTION: 'MAP_ASSET_KEYS.SELECTION',
+});

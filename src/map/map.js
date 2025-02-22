@@ -139,6 +139,40 @@ export class Map {
     get width() { return this.#width; }
 
     /**
+     * @param {number} x
+     * @param {number} y
+     * @returns {number[]}
+     */
+    getEnemiesAt(x, y) {
+        let enemies = [];
+
+        let isActive = false;        
+        for (let i=0; i<(x === -1 ? this.#width : this.#height); i++) {
+            let tile = this.#tiles.find((singleTile) => (x === -1 && singleTile.x === i && singleTile.y === y) || (y === -1 && singleTile.x === x && singleTile.y === i));
+            if (!tile) {
+                continue;
+            }
+
+            if (tile.enemy && !isActive) {
+                isActive = true;
+                enemies.push(1);
+                continue;
+            }
+
+            if (tile.enemy) {
+                enemies[enemies.length - 1]++;
+                continue;
+            }
+
+            if (!tile.enemy && isActive) {
+                isActive = false;
+            }
+        }
+
+        return enemies.reverse();
+    }
+
+    /**
      * @param {Tile} tile
      * @returns {Tile[]}
      */
@@ -157,4 +191,5 @@ export class Map {
         }
         return neighboors;
     }
+    
 }

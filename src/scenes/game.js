@@ -29,8 +29,9 @@ export class GameScene extends Phaser.Scene {
             frame.y = this.#map.container.y + (y * frame.displayHeight) + 15;
             frame.x = this.#map.container.x - frame.displayWidth/2 - 1;
 
-            for (let i=0; i<5; i++) {
-                let text = this.add.bitmapText(frame.x + frame.displayWidth/2, frame.y, MAP_ASSET_KEYS.FRAME_FONT, i.toString(), 8);
+            let enemyLabels = this.#map.getEnemiesAt(-1, y);
+            for (let i=0; i<enemyLabels.length; i++) {
+                let text = this.add.bitmapText(frame.x + frame.displayWidth/2, frame.y, MAP_ASSET_KEYS.FRAME_FONT, enemyLabels[i], 8);
                 text.y -= text.height/2 - 1;
                 text.x -= text.width + 2 + (i * (text.width + 4));
             }
@@ -44,8 +45,9 @@ export class GameScene extends Phaser.Scene {
             frame.x = this.#map.container.x + (x * frame.displayWidth) + 15;
             frame.y = this.#map.container.y - frame.displayHeight/2 - 1;
 
-            for (let i=0; i<5; i++) {
-                let text = this.add.bitmapText(frame.x, frame.y + frame.displayHeight/2, MAP_ASSET_KEYS.FRAME_FONT, i.toString(), 8);
+            let enemyLabels = this.#map.getEnemiesAt(x, -1);
+            for (let i=0; i<enemyLabels.length; i++) {
+                let text = this.add.bitmapText(frame.x, frame.y + frame.displayHeight/2, MAP_ASSET_KEYS.FRAME_FONT, enemyLabels[i], 8);
                 text.x -= text.width/2;
                 text.y -= text.height + 2 + (i * (text.height + 4));
             }

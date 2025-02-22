@@ -46,9 +46,7 @@ export class Map {
                 tile.background.setInteractive();
                 tile.background.on('pointerdown', (target) => {
                     this.#selectedTile = tile;
-                });
-                this.#scene.input.on('pointerupoutside', (target) => {
-                    this.#selectedTile = null;
+                    this.#selectedTile.overlay.gameObject.setTint(0xaaaaaa);
                 });
             }
         }
@@ -58,11 +56,13 @@ export class Map {
             let y1 = target.worldY - this.#container.y + 15;
 
             if (this.#selectedTile) {
+                this.#selectedTile.overlay.gameObject.setTint(0xffffff);
+
                 let x = this.#selectedTile.container.x;
                 let y = this.#selectedTile.container.y;
 
                 if (x1 > x && x1 < x + this.#selectedTile.container.getBounds().width && y1 > y && y1 < y + this.#selectedTile.container.getBounds().height) {
-                    this.#selectedTile.removeOverlay();
+                    this.#selectedTile.overlay.scaleOut();
                 }
             }
 

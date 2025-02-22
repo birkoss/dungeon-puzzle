@@ -20,6 +20,7 @@ export class GameScene extends Phaser.Scene {
         this.#map.container.y = this.scale.width - this.#map.container.getBounds().width - 3;
         this.add.existing(this.#map.container);
 
+       
         for (let y=0; y<this.#map.height; y++) {
             let frame = this.add.image(0, 0, MAP_ASSET_KEYS.BLANK);
             frame.setTint(0x221208);

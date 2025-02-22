@@ -1,3 +1,5 @@
+import { TILE_ENTITY_TYPE, TileEntity } from "./entity.js";
+
 export const TILE_SCALE = 3;
 
 export class Tile {
@@ -29,6 +31,7 @@ export class Tile {
 
     get container() { return this.#container; }
     get background() { return this.#background; }
+    get overlay() { return this.#overlay; }
     get x() { return this.#x; }
     get y() { return this.#y; }
 
@@ -42,13 +45,10 @@ export class Tile {
         this.#background = this._scene.add.sprite(x, y, assetKey, frame).setScale(TILE_SCALE).setOrigin(0.5);
         this.#container.add(this.#background);
 
-        this.#overlay = this._scene.add.sprite(x, y, assetKey, 0).setScale(TILE_SCALE).setOrigin(0.5);
-        this.#container.add(this.#overlay);
+        this.#overlay = new TileEntity(this._scene, TILE_ENTITY_TYPE.OVERLAY);
+        this.#overlay.create(assetKey, 0);
+        this.#container.add(this.#overlay.gameObject);
         
         return this.#background;
-    }
-
-    removeOverlay() {
-        this.#overlay.setAlpha(0);
     }
 }

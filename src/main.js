@@ -13,7 +13,7 @@ const game = new Phaser.Game({
         width: window.innerWidth,
         height: window.innerHeight,
     },
-    backgroundColor: '#333333',
+    backgroundColor: '#000000',
   
 });
 

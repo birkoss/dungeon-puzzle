@@ -16,6 +16,7 @@ export class Map {
     /** @type {number} */
     #height;
 
+    #tiles;
     #selectedTile;
 
     /**
@@ -30,6 +31,7 @@ export class Map {
 
         this.#container = this.#scene.add.container(0, 0);
 
+        this.#tiles = [];
         for (let y=0; y<this.#height; y++) {
             for (let x=0; x<this.#width; x++) {
                 let tile = new Tile(this.#scene, x, y);
@@ -48,6 +50,8 @@ export class Map {
                     this.#selectedTile = tile;
                     this.#selectedTile.overlay.gameObject.setTint(0xaaaaaa);
                 });
+
+                this.#tiles.push(tile);
             }
         }
 
@@ -68,9 +72,89 @@ export class Map {
 
             this.#selectedTile = null;
         });
+
+        // Pick starting position
+        let availableTiles = this.#tiles.filter((singleTile) => {
+            return singleTile.x > 0 && singleTile.x < this.#width - 1 && singleTile.y > 0 && singleTile.y < this.#height - 1;
+        });
+        Phaser.Math.RND.shuffle(availableTiles);
+
+        let startingTile = availableTiles.pop();
+        let revealedTiles = [];
+        for (let x=-1; x<=1; x++) {
+            for (let y=-1; y<=1; y++) {
+                let tile = this.#tiles.find((singleTile) => {
+                    return singleTile.x === startingTile.x + x && singleTile.y === startingTile.y + y;
+                });
+
+                if (tile) {
+                    revealedTiles.push(tile);
+                }
+            }
+        }
+
+        // Get all non-revealed tiles
+        let nonRevealedTiles = this.#tiles.filter((singleTile) => {
+            return !revealedTiles.includes(singleTile);
+        });
+        Phaser.Math.RND.shuffle(nonRevealedTiles);
+
+        for (let i=0; i<Phaser.Math.Between(20, 40); i++) {
+            let tile = nonRevealedTiles.pop();
+            if (!tile) {
+                continue;
+            }
+            
+            tile.createEnemy(MAP_ASSET_KEYS.MAP, 9);
+        }
+
+        // Show labels
+        this.#tiles.forEach((singleTile) => {
+            if (singleTile.enemy) {
+                return;
+            }
+
+            // Get neighboors
+            let neighboors = this.#getNeighboors(singleTile);
+            let enemyNear = neighboors.filter((singleNeighboor) => {
+                return singleNeighboor.enemy;
+            }).length;
+            
+            if (enemyNear > 0) {
+                singleTile.showLabel(enemyNear);
+            }
+        });
+        
+    
+        // Hide all tiles
+        this.#tiles.forEach((singleTile) => {
+            if (!revealedTiles.includes(singleTile)) {
+                singleTile.createOverlay(MAP_ASSET_KEYS.MAP, 0);
+            }
+        });
     }
 
     get container() { return this.#container; }
     get height() { return this.#height; }
     get width() { return this.#width; }
+
+    /**
+     * @param {Tile} tile
+     * @returns {Tile[]}
+     */
+    #getNeighboors(tile) {
+        let neighboors = [];
+        for (let x=-1; x<=1; x++) {
+            for (let y=-1; y<=1; y++) {
+                let neighboor = this.#tiles.find((singleTile) => {
+                    return singleTile !== tile && singleTile.x === tile.x + x && singleTile.y === tile.y + y;
+                });
+
+                if (neighboor) {
+                    neighboors.push(neighboor);
+                }
+            }
+        }
+        return neighboors;
+    }
 }
